@@ -6,7 +6,6 @@
             multiple
             :auto-upload="false"
             :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
         >
             <el-icon><Plus /></el-icon>
         </el-upload>
@@ -16,16 +15,23 @@
                 <el-button @click="cancel">取 消</el-button>
             </div>
         </template>
+        <el-dialog v-model="dialogVisible" width="700px" title="图片预览">
+            <div class="dialog-image-preview">
+                <img w-full :src="dialogImageUrl" alt="Preview Image" style="max-width: 700px; max-height: 700px;"/>
+            </div>
+        </el-dialog>
     </el-dialog>
 </template>
 <script setup name="addPhoto">
-import { uploadFiles } from '@/api/qrcode/file'
+import { uploadFile } from '@/api/qrcode/file'
 const { proxy } = getCurrentInstance()
 
 const visible = ref(false)
 let openResolve = null
 const fileList = ref([])
 const title = ref("上传图片")
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
 const open = () => {
     return new Promise((resolve, reject) => {
         fileList.value = []
@@ -35,11 +41,10 @@ const open = () => {
 }
 const submitForm = () => {
     let formData = new FormData()
-    const fileNameBase = 'additionalProp'
-    fileList.value.forEach((file, index) => {
-        formData.append(`${fileNameBase}${index + 1}`, file.raw, file.name)
+    fileList.value.forEach(file => {
+        formData.append('file', file.raw, file.name)
     })
-    uploadFiles(formData).then(res => {
+    uploadFile(formData).then(res => {
         proxy.$message.success("上传成功")
         visible.value = false
         openResolve(res)
@@ -48,8 +53,20 @@ const submitForm = () => {
 const cancel = () => {
     visible.value = false
 }
+const handlePictureCardPreview = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url
+  dialogVisible.value = true
+}
 defineExpose({
     open
 })
-
 </script>
+<style lang="scss" scoped>
+.dialog-image-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+</style>

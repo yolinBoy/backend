@@ -12,7 +12,12 @@
           <el-table-column label="图片名称" align="center" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="预览" align="center" prop="status">
              <template #default="scope">
-                <el-image style="width: 100px; height: 100px" :src="'https://47.98.39.222:8443/' + scope.row.path" fit="cover">
+                <el-image 
+                  style="width: 100px; height: 100px" 
+                  :src="'https://47.98.39.222:8443' + scope.row.path"       
+                  fit="cover"
+                  @click="showPreview = true; initialIndex = scope.$index"
+               >
                    <template #progress="{ activeIndex, total }">
                       <span>{{ activeIndex + 1 + '-' + total }}</span>
                    </template>
@@ -86,6 +91,9 @@ import { listFile, deleteFile } from '@/api/qrcode/file'
     listFile().then(response => {
        typeList.value = response.rows
        total.value = response.total
+       srcList.value = response.rows.map(item=> {
+         return 'https://47.98.39.222:8443' + item.path
+       })
        loading.value = false
     })
  }
