@@ -24,15 +24,8 @@
                 </el-image>
              </template>
           </el-table-column>
-          <!-- <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" /> -->
-          <el-table-column label="上传时间" align="center" prop="updateTime" width="180">
-             <template #default="scope">
-                <span>{{ parseTime(scope.row.updateTime) }}</span>
-             </template>
-          </el-table-column>
           <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
              <template #default="scope">
-                <!-- <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)">修改</el-button> -->
                 <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
              </template>
           </el-table-column>
