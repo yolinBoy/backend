@@ -36,3 +36,12 @@ export function deleteFile(fileId) {
     method: 'delete'
   })
 }
+
+// 绑定域名
+export function bindingDomain(data) {
+  return request({
+    url: '/qrcode/edit',
+    method: 'post',
+    data: data
+  })
+}

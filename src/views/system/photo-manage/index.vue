@@ -17,7 +17,6 @@
       </el-row>
 
       <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
-         <el-table-column type="selection" width="55" align="center" />
          <el-table-column label="图片名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
          <el-table-column label="预览" align="center" prop="status">
             <template #default="scope">
@@ -58,7 +57,7 @@
 </template>
 
 <script setup name="Dict">
-impoer addDialog from './components/addDialog.vue'
+import addDialog from './components/addDialog.vue'
 import useDictStore from '@/store/modules/dict'
 import { listType, getType, delType, addType, updateType, refreshCache } from "@/api/system/dict/type"
 
@@ -168,6 +167,32 @@ function handleRefreshCache() {
 }
 
 const handleUpdate = () => {
+   ElMessageBox({
+    title: 'Message',
+    message: <div>123</div>,
+    showCancelButton: true,
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel',
+    beforeClose: (action, instance, done) => {
+      if (action === 'confirm') {
+        instance.confirmButtonLoading = true
+        instance.confirmButtonText = 'Loading...'
+        setTimeout(() => {
+          done()
+          setTimeout(() => {
+            instance.confirmButtonLoading = false
+          }, 300)
+        }, 3000)
+      } else {
+        done()
+      }
+    },
+  }).then((action) => {
+    ElMessage({
+      type: 'info',
+      message: `action: ${action}`,
+    })
+  })
 }
 
 const onPhotoClick = (index) => {

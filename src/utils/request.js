@@ -11,6 +11,22 @@ let downloadLoadingInstance
 // 是否显示重新登录
 export let isRelogin = { show: false }
 
+let loadingInstanceNumber = 0 // 新增
+const showLoading = () => {
+  loadingInstanceNumber++
+  if (loadingInstanceNumber === 1) {
+    return ElLoading.service({ text: "正在加载数据，请稍候", background: "rgba(0, 0, 0, 0.7)", })
+  }
+}
+
+const hideLoading = () => {
+  loadingInstanceNumber--
+  if (loadingInstanceNumber === 0) {
+    return ElLoading.service().close()
+  }
+}
+
+
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
 const service = axios.create({
@@ -65,14 +81,17 @@ service.interceptors.request.use(config => {
       }
     }
   }
+  showLoading()
   return config
 }, error => {
-    console.log(error)
-    Promise.reject(error)
+  hideLoading()
+  console.log(error)
+  Promise.reject(error)
 })
 
 // 响应拦截器
 service.interceptors.response.use(res => {
+  hideLoading()
     // 未设置状态码则默认成功状态
     const code = res.data.code || 200
     // 获取错误信息
@@ -108,6 +127,7 @@ service.interceptors.response.use(res => {
     }
   },
   error => {
+    hideLoading()
     console.log('err' + error)
     let { message } = error
     if (message == "Network Error") {
